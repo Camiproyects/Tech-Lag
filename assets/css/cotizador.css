@@ -1,0 +1,130 @@
+/* ============================= */
+/* COTIZADOR TECH-LAG */
+/* ============================= */
+
+/* Ajustes generales */
+.section {
+  padding: 60px 0;
+}
+
+/* ============================= */
+/* TARJETA DEL COTIZADOR */
+/* ============================= */
+
+.card {
+  max-width: 420px;
+  margin: 0 auto;
+  background: linear-gradient(180deg, #181529, #0f0d1a);
+  border: 1px solid rgba(124, 92, 255, 0.25);
+  border-radius: 18px;
+  padding: 32px 26px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  animation: fadeUp 0.6s ease forwards;
+}
+
+/* ============================= */
+/* LABELS */
+/* ============================= */
+
+.card label {
+  display: block;
+  font-size: 0.85rem;
+  margin-bottom: 6px;
+  color: var(--text-secondary);
+}
+
+/* ============================= */
+/* SELECTS */
+/* ============================= */
+
+.card select {
+  width: 100%;
+  background: #0c0a17;
+  border: 1px solid rgba(124, 92, 255, 0.3);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 0.95rem;
+  color: var(--text-main);
+  outline: none;
+  transition: all 0.25s ease;
+}
+
+.card select:hover {
+  border-color: var(--purple-main);
+}
+
+.card select:focus {
+  border-color: var(--purple-main);
+  box-shadow: 0 0 0 2px rgba(124, 92, 255, 0.25);
+}
+
+/* ============================= */
+/* TEXTO INFORMATIVO */
+/* ============================= */
+
+.card p {
+  line-height: 1.4;
+}
+
+/* ============================= */
+/* PRECIO */
+/* ============================= */
+
+#precio {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-top: 8px;
+  color: var(--purple-main);
+}
+
+/* ============================= */
+/* BOTÓN WHATSAPP */
+/* ============================= */
+
+#whatsapp-btn {
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  padding: 14px 0;
+  background: linear-gradient(135deg, #7c5cff, #9f88ff);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: center;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+#whatsapp-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 25px rgba(124, 92, 255, 0.35);
+}
+
+/* ============================= */
+/* ANIMACIONES */
+/* ============================= */
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================= */
+/* RESPONSIVE */
+/* ============================= */
+
+@media (max-width: 480px) {
+  .card {
+    padding: 26px 20px;
+  }
+
+  #precio {
+    font-size: 1.9rem;
+  }
+}
