@@ -1,0 +1,151 @@
+:root {
+  --bg-main: #0D0B14;
+  --bg-secondary: #151225;
+  --bg-alt: #1C1733;
+
+  --text-main: #FFFFFF;
+  --text-secondary: #D1CFEA;
+  --text-muted: #9B97C0;
+
+  --purple-main: #7C5CFF;
+  --purple-dark: #5B3FD6;
+  --purple-light: #A996FF;
+  --purple-soft: #C9BFFF;
+
+  --border-color: #2A2545;
+}
+
+/* Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+body {
+  background: var(--bg-main);
+  color: var(--text-main);
+  line-height: 1.6;
+}
+
+a {
+  color: var(--purple-main);
+  text-decoration: none;
+}
+
+/* Layout */
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 20px;
+}
+
+/* Header */
+.header {
+  background: linear-gradient(
+    135deg,
+    var(--purple-main),
+    var(--purple-dark)
+  );
+  text-align: center;
+  padding: 10px 5px;
+}
+
+.header h1 {
+  font-size: 3rem;
+  letter-spacing: 2px;
+}
+
+.header p {
+  margin: 15px 0;
+  color: var(--text-secondary);
+}
+
+.btn {
+  display: inline-block;
+  background: var(--bg-main);
+  color: var(--text-main);
+  padding: 14px 26px;
+  border-radius: 8px;
+  border: 1px solid var(--purple-soft);
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  background: var(--purple-main);
+  color: #fff;
+}
+
+/* Nav */
+.nav {
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.nav a {
+  margin-right: 18px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.nav a:hover {
+  color: var(--purple-light);
+}
+
+/* Sections */
+.section {
+  padding: 70px 20px;
+}
+
+.section.dark {
+  background: var(--bg-secondary);
+}
+
+.section h2 {
+  margin-bottom: 20px;
+  color: var(--purple-light);
+}
+
+/* Grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: var(--bg-alt);
+  padding: 25px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  text-align: center;
+  transition: transform 0.3s ease, border 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  border-color: var(--purple-main);
+}
+
+/* Texto secundario */
+p {
+  color: var(--text-secondary);
+}
+
+/* Footer */
+.footer {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  text-align: center;
+  padding: 35px 20px;
+  font-size: 0.9rem;
+}
+
+.footer a {
+  color: var(--text-muted);
+}
+
+.footer a:hover {
+  color: var(--purple-light);
+}

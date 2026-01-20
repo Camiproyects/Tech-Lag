@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Cotizador | TECH-LAG</title>
+
+  <meta name="description" content="Cotiza en tiempo real la reparación de tu celular en TECH-LAG. Diferentes calidades, precios claros y sin sorpresas.">
+
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="container">
+      <h1>Cotizador TECH-LAG</h1>
+      <p>Selecciona tu equipo y conoce el precio estimado</p>
+    </div>
+  </header>
+
+  <!-- COTIZADOR -->
+  <section class="section">
+    <div class="container">
+
+      <form id="cotizador-form" class="card">
+
+        <!-- MARCA -->
+        <label for="marca">Marca</label>
+        <select id="marca" required>
+          <option value="">Selecciona marca</option>
+          <option value="Samsung">Samsung</option>
+          <option value="Apple">Apple</option>
+          <option value="Xiaomi">Xiaomi</option>
+          <option value="Motorola">Motorola</option>
+          <option value="Huawei">Huawei</option>
+          <option value="Oppo">Oppo</option>
+          <option value="Realme">Realme</option>
+        </select>
+
+        <br><br>
+
+        <!-- MODELO -->
+        <label for="modelo">Modelo</label>
+        <select id="modelo" required>
+          <option value="">Selecciona modelo</option>
+        </select>
+
+        <br><br>
+
+        <!-- SERVICIO -->
+        <label for="servicio">Servicio</label>
+        <select id="servicio" required>
+          <option value="">Selecciona servicio</option>
+          <option value="pantalla">Cambio de pantalla</option>
+          <option value="bateria">Cambio de batería</option>
+          <option value="puerto">Puerto de carga</option>
+          <option value="software">Software</option>
+          <option value="diagnostico">Diagnóstico</option>
+        </select>
+
+        <br><br>
+
+        <!-- CALIDAD -->
+        <label for="calidad">Calidad del repuesto</label>
+        <select id="calidad" required>
+          <option value="">Selecciona calidad</option>
+          <option value="original">Original</option>
+          <option value="oem">OEM / Premium</option>
+          <option value="generica">Genérica</option>
+        </select>
+
+        <p style="font-size: 0.9rem; margin-top: 8px; color: var(--text-muted);">
+          La calidad influye en el precio, durabilidad y experiencia del repuesto.
+        </p>
+
+        <br>
+
+        <!-- RESULTADO -->
+        <h3>Total estimado</h3>
+        <h2 id="precio">$0 COP</h2>
+
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 8px;">
+          * El valor es estimado y puede variar tras diagnóstico físico.
+        </p>
+
+        <br>
+
+        <!-- CTA -->
+        <a id="whatsapp-btn" href="#" class="btn">
+          Solicitar por WhatsApp
+        </a>
+
+      </form>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <a href="index.html">← Volver al inicio</a>
+    </div>
+  </footer>
+
+  <!-- SUPABASE -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase.js"></script>
+
+  <!-- JS COTIZADOR -->
+  <script src="assets/js/cotizador.js"></script>
+
+</body>
+</html>
