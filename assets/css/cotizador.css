@@ -128,3 +128,57 @@
     font-size: 1.9rem;
   }
 }
+/* ============================= */
+/* TOPBAR */
+/* ============================= */
+
+.topbar {
+  background: rgba(13, 11, 20, 0.95);
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.topbar-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+
+/* LOGO */
+.logo {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.logo span {
+  color: var(--purple-main);
+}
+
+/* NAV */
+.topbar-nav {
+  display: flex;
+  gap: 18px;
+}
+
+.topbar-nav a {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  transition: color 0.25s ease;
+}
+
+.topbar-nav a:hover,
+.topbar-nav a.active {
+  color: var(--purple-main);
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .topbar-nav {
+    display: none;
+  }
+}
+
