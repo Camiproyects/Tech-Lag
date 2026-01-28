@@ -1,89 +1,136 @@
-// assets/js/cotizador.js
+/* ============================= */
+/* SUPABASE CLIENT */
+/* ============================= */
 
-const supabase = window.supabaseClient;
+const SUPABASE_URL = "https://nhiqjzjdztoyqsvnrkai.supabase.co";
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5oaXFqempkenRveXFzdm5ya2FpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg3MDEyMzcsImV4cCI6MjA4NDI3NzIzN30.SlFOQvYJAiOTZvX-Da8bUmASvZ8PSfUe30pQTip4bUc";
 
-const marcaSelect = document.getElementById("marca");
-const modeloSelect = document.getElementById("modelo");
-const servicioSelect = document.getElementById("servicio");
-const calidadSelect = document.getElementById("calidad");
-const precioEl = document.getElementById("precio");
-const whatsappBtn = document.getElementById("whatsapp-btn");
+const client = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
 
-let precioActual = 0;
+/* ============================= */
+/* ELEMENTOS */
+/* ============================= */
 
-// 🔹 Cargar modelos según marca
-marcaSelect.addEventListener("change", async () => {
-  modeloSelect.innerHTML = `<option value="">Cargando...</option>`;
+const marcaEl    = document.getElementById("marca");
+const modeloEl   = document.getElementById("modelo");
+const servicioEl = document.getElementById("servicio");
+const calidadEl  = document.getElementById("calidad");
+const precioEl   = document.getElementById("precio");
 
-  const { data, error } = await supabase
-    .from("repuestos")
-    .select("modelo")
-    .eq("marca", marcaSelect.value);
+/* ============================= */
+/* UTIL */
+/* ============================= */
+
+function reset(select, text) {
+  select.innerHTML = `<option value="">${text}</option>`;
+}
+
+/* ============================= */
+/* CARGAR MARCAS */
+/* ============================= */
+
+async function cargarMarcas() {
+  const { data, error } = await client
+    .from("Servicios")
+    .select("marca")
+    .eq("activo", true);
 
   if (error) {
     console.error(error);
     return;
   }
 
-  const modelosUnicos = [...new Set(data.map(r => r.modelo))];
+  const marcas = [...new Set(data.map(d => d.marca))];
 
-  modeloSelect.innerHTML = `<option value="">Selecciona modelo</option>`;
-  modelosUnicos.forEach(modelo => {
-    modeloSelect.innerHTML += `<option value="${modelo}">${modelo}</option>`;
+  reset(marcaEl, "Selecciona marca");
+
+  marcas.forEach(m => {
+    marcaEl.innerHTML += `<option value="${m}">${m}</option>`;
   });
-});
+}
 
-// 🔹 Calcular precio
+/* ============================= */
+/* CARGAR MODELOS */
+/* ============================= */
+
+async function cargarModelos() {
+  reset(modeloEl, "Selecciona modelo");
+
+  const marca = marcaEl.value;
+  if (!marca) return;
+
+  const { data, error } = await client
+    .from("Servicios")
+    .select("modelo")
+    .eq("marca", marca)
+    .eq("activo", true);
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  const modelos = [...new Set(data.map(d => d.modelo))];
+
+  modelos.forEach(m => {
+    modeloEl.innerHTML += `<option value="${m}">${m}</option>`;
+  });
+}
+
+/* ============================= */
+/* CALCULAR PRECIO */
+/* ============================= */
+
 async function calcularPrecio() {
-  if (!marcaSelect.value || !modeloSelect.value || !servicioSelect.value || !calidadSelect.value) {
+  const marca    = marcaEl.value;
+  const modelo   = modeloEl.value;
+  const servicio = servicioEl.value;
+  const calidad  = calidadEl.value;
+
+  if (!marca || !modelo || !servicio || !calidad) {
     precioEl.textContent = "$0 COP";
     return;
   }
 
-  const { data, error } = await supabase
-    .from("repuestos")
+  const { data, error } = await client
+    .from("Servicios")
     .select("precio")
-    .eq("marca", marcaSelect.value)
-    .eq("modelo", modeloSelect.value)
-    .eq("servicio", servicioSelect.value)
-    .eq("calidad", calidadSelect.value)
-    .limit(1)
+    .eq("marca", marca)
+    .eq("modelo", modelo)
+    .eq("servicio", servicio)
+    .eq("calidad", calidad)
+    .eq("activo", true)
     .single();
 
   if (error || !data) {
-    precioEl.textContent = "No disponible";
+    precioEl.textContent = "$0 COP";
     return;
   }
 
-  precioActual = data.precio;
-  precioEl.textContent = `$${precioActual.toLocaleString("es-CO")} COP`;
-
-  generarWhatsApp();
+  precioEl.textContent =
+    `$${data.precio.toLocaleString("es-CO")} COP`;
 }
 
-servicioSelect.addEventListener("change", calcularPrecio);
-calidadSelect.addEventListener("change", calcularPrecio);
-modeloSelect.addEventListener("change", calcularPrecio);
+/* ============================= */
+/* EVENTOS */
+/* ============================= */
 
-// 🔹 WhatsApp
-function generarWhatsApp() {
-  if (!precioActual) return;
+marcaEl.addEventListener("change", () => {
+  reset(modeloEl, "Selecciona modelo");
+  calcularPrecio();
+  cargarModelos();
+});
 
-  const mensaje = `
-Hola 👋, TECH-LAG
+modeloEl.addEventListener("change", calcularPrecio);
+servicioEl.addEventListener("change", calcularPrecio);
+calidadEl.addEventListener("change", calcularPrecio);
 
-Quiero una cotización con estos datos:
+/* ============================= */
+/* INIT */
+/* ============================= */
 
-📱 *Marca:* ${marcaSelect.value}
-📦 *Modelo:* ${modeloSelect.value}
-🛠️ *Servicio:* ${servicioSelect.options[servicioSelect.selectedIndex].text}
-⭐ *Calidad:* ${calidadSelect.options[calidadSelect.selectedIndex].text}
-💰 *Precio estimado:* $${precioActual.toLocaleString("es-CO")} COP
-
-Quedo atento(a). Gracias 🙌
-  `.trim();
-
-  const numeroWhatsApp = "573224494595"; // 👈 CAMBIA ESTO
-
-  whatsappBtn.href = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
-}
+document.addEventListener("DOMContentLoaded", cargarMarcas);
