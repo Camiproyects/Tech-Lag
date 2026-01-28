@@ -6,94 +6,252 @@
 
   <title>TECH-LAG | Servicio Técnico de Celulares en Bogotá</title>
 
-  <!-- SEO básico -->
-  <meta name="description" content="TECH-LAG - Servicio técnico profesional para celulares en Bogotá. Reparaciones rápidas, garantía real y cotización en línea.">
-  <meta name="keywords" content="servicio técnico celulares bogotá, reparación celulares, cambio de pantalla, TECH-LAG">
+  <!-- SEO -->
+  <meta name="description" content="TECH-LAG - Servicio técnico profesional para celulares en Bogotá. Reparaciones rápidas y cotización en línea.">
+  <meta name="keywords" content="reparación celulares bogotá, servicio técnico celulares, cambio de pantalla">
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #0e0e16;
+      color: #ddd;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    /* ============================= */
+    /* HEADER */
+    /* ============================= */
+
+    .top-header {
+      background: #0b0b12;
+      border-bottom: 1px solid #1f1f2e;
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    .logo span {
+      color: #7b5cff;
+    }
+
+    .menu a {
+      color: #cfcfe6;
+      margin-left: 25px;
+      font-size: 14px;
+    }
+
+    .menu a.active {
+      color: #7b5cff;
+    }
+
+    /* ============================= */
+    /* SECCIONES */
+    /* ============================= */
+
+    .section {
+      padding: 60px 20px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .section.dark {
+      background: #121224;
+    }
+
+    h2 {
+      color: #fff;
+      margin-bottom: 15px;
+    }
+
+    p {
+      line-height: 1.6;
+      font-size: 15px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+
+    .card {
+      background: #1a1a2f;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    /* ============================= */
+    /* FOOTER */
+    /* ============================= */
+
+    .footer {
+      background: #0b0b12;
+      padding: 20px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .footer a {
+      color: #7b5cff;
+    }
+
+    /* ============================= */
+    /* BLOQUEO DE ACCESO */
+    /* ============================= */
+
+    #access-lock {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 5, 10, 0.97);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .access-box {
+      background: #111122;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      width: 90%;
+      max-width: 350px;
+    }
+
+    .access-box h2 {
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    .access-box p {
+      color: #aaa;
+      font-size: 14px;
+    }
+
+    .access-box input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 15px;
+      border-radius: 5px;
+      border: none;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    .access-box button {
+      margin-top: 15px;
+      width: 100%;
+      padding: 10px;
+      background: #7b5cff;
+      border: none;
+      color: #fff;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #error-msg {
+      color: #ff4d4d;
+      margin-top: 10px;
+      font-size: 13px;
+    }
+  </style>
 </head>
+
 <body>
 
-  <!-- HEADER -->
-  <header class="header">
-    <div class="container">
-      <h1>TECH-LAG</h1>
-      <p>Servicio Técnico Profesional para Celulares en Bogotá</p>
-      <a href="cotizador.html" class="btn">Cotiza tu reparación</a>
-    </div>
-  </header>
+<!-- BLOQUEO DE ACCESO -->
+<div id="access-lock">
+  <div class="access-box">
+    <h2>Acceso restringido</h2>
+    <p>Ingresa el código para continuar</p>
+    <input type="password" id="access-code" placeholder="Código de acceso">
+    <button onclick="verificarAcceso()">Ingresar</button>
+    <p id="error-msg"></p>
+  </div>
+</div>
 
-  <!-- NAV -->
-  <nav class="nav">
-    <div class="container">
-      <a href="#nosotros">Nosotros</a>
-      <a href="#servicios">Servicios</a>
-      <a href="cotizador.html">Cotizador</a>
-      <a href="#contacto">Contacto</a>
+<!-- HEADER -->
+<header class="top-header">
+  <div class="header-container">
+    <div class="logo">
+      TECH<span>-LAG</span>
+    </div>
+
+    <nav class="menu">
+      <a href="#" class="active">Inicio</a>
+      <a href="#nosotros">Conócenos</a>
       <a href="legal/terminos.html">Legal</a>
-    </div>
-  </nav>
+      <a href="cotizador.html">Cotizador</a>
+    </nav>
+  </div>
+</header>
 
-  <!-- NOSOTROS -->
-  <section id="nosotros" class="section">
-    <div class="container">
-      <h2>Nosotros</h2>
-      <p>
-        En <strong>TECH-LAG</strong> somos especialistas en la reparación de dispositivos móviles.
-        Trabajamos con técnicos capacitados, repuestos de calidad y procesos claros.
-        Aquí no improvisamos: diagnosticamos, explicamos y reparamos con garantía.
-      </p>
-    </div>
-  </section>
+<!-- NOSOTROS -->
+<section id="nosotros" class="section">
+  <h2>Nosotros</h2>
+  <p>
+    En <strong>TECH-LAG</strong> ofrecemos servicio técnico profesional para dispositivos móviles.
+    Diagnosticamos con precisión, explicamos con claridad y reparamos con garantía.
+  </p>
+</section>
 
-  <!-- SERVICIOS -->
-  <section id="servicios" class="section dark">
-    <div class="container">
-      <h2>Servicios</h2>
+<!-- SERVICIOS -->
+<section class="section dark">
+  <h2>Servicios</h2>
+  <div class="grid">
+    <div class="card">Cambio de pantalla</div>
+    <div class="card">Cambio de batería</div>
+    <div class="card">Puerto de carga</div>
+    <div class="card">Cámaras y audio</div>
+    <div class="card">Software</div>
+    <div class="card">Diagnóstico técnico</div>
+  </div>
+</section>
 
-      <div class="grid">
-        <div class="card">Cambio de pantalla</div>
-        <div class="card">Cambio de batería</div>
-        <div class="card">Puerto de carga</div>
-        <div class="card">Cámaras y audio</div>
-        <div class="card">Software</div>
-        <div class="card">Diagnóstico técnico</div>
-        <div class="card">OTROS?? Contactanos!!</div>
-      </div>
-    </div>
-  </section>
+<!-- CONTACTO -->
+<section class="section">
+  <h2>Contacto</h2>
+  <p>📍 Bogotá, Colombia</p>
+  <p>📲 Atención por WhatsApp</p>
+</section>
 
-  <!-- FIDELIZACIÓN -->
-  <section class="section">
-    <div class="container">
-      <h2>Programa TECH-POINTS</h2>
-      <p>
-        Cada reparación suma puntos.  
-        Los TECH-POINTS se canjean por descuentos y beneficios reales.
-      </p>
-    </div>
-  </section>
+<!-- FOOTER -->
+<footer class="footer">
+  <p>© TECH-LAG | Servicio Técnico Profesional en Bogotá</p>
+  <a href="legal/terminos.html">Términos</a> |
+  <a href="legal/privacidad.html">Privacidad</a>
+</footer>
 
-  <!-- CONTACTO -->
-  <section id="contacto" class="section dark">
-    <div class="container">
-      <h2>Contacto</h2>
-      <p>📍 Bogotá, Colombia</p>
-      <p>📲 Atención por WhatsApp</p>
-    </div>
-  </section>
+<script>
+function verificarAcceso() {
+  const code = document.getElementById("access-code").value;
+  const error = document.getElementById("error-msg");
 
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="container">
-      <p>© TECH-LAG | Servicio Técnico Profesional en Bogotá</p>
-      <a href="legal/terminos.html">Términos y Condiciones</a> |
-      <a href="legal/privacidad.html">Política de Privacidad</a>
-    </div>
-  </footer>
+  if (code === "005") {
+    document.getElementById("access-lock").style.display = "none";
+  } else {
+    error.textContent = "Código incorrecto";
+  }
+}
+</script>
 
-  <!-- JS -->
-  <!-- <script src="assets/js/main.js"></script> -->
 </body>
 </html>
