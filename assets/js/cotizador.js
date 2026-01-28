@@ -29,6 +29,17 @@ const resetPrecio = () => {
 };
 
 /* ============================= */
+/* PRESELECCIONAR SERVICIO */
+/* ============================= */
+
+const params = new URLSearchParams(window.location.search);
+const servicioURL = params.get("servicio");
+
+if (servicioURL) {
+  servicioSelect.value = servicioURL;
+}
+
+/* ============================= */
 /* CARGAR MARCAS */
 /* ============================= */
 
