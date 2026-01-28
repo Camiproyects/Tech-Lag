@@ -176,3 +176,18 @@ Quiero cotizar:
     "https://wa.me/573224494595?text=" +
     encodeURIComponent(mensaje);
 }
+
+/* ============================= */
+/* VALIDAR TÉRMINOS */
+/* ============================= */
+
+const tycCheckbox = document.getElementById("acepta-tyc");
+
+tycCheckbox.addEventListener("change", () => {
+  if (tycCheckbox.checked && precioActual > 0) {
+    whatsappBtn.classList.remove("disabled");
+  } else {
+    whatsappBtn.classList.add("disabled");
+  }
+});
+
