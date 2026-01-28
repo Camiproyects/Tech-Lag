@@ -1,136 +1,149 @@
 /* ============================= */
-/* SUPABASE CLIENT */
-/* ============================= */
-
-const SUPABASE_URL = "https://nhiqjzjdztoyqsvnrkai.supabase.co";
-const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5oaXFqempkenRveXFzdm5ya2FpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg3MDEyMzcsImV4cCI6MjA4NDI3NzIzN30.SlFOQvYJAiOTZvX-Da8bUmASvZ8PSfUe30pQTip4bUc";
-
-const client = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-);
-
-/* ============================= */
 /* ELEMENTOS */
 /* ============================= */
 
-const marcaEl    = document.getElementById("marca");
-const modeloEl   = document.getElementById("modelo");
-const servicioEl = document.getElementById("servicio");
-const calidadEl  = document.getElementById("calidad");
-const precioEl   = document.getElementById("precio");
+const marcaSelect = document.getElementById("marca");
+const modeloSelect = document.getElementById("modelo");
+const servicioSelect = document.getElementById("servicio");
+const calidadSelect = document.getElementById("calidad");
+const precioEl = document.getElementById("precio");
+const whatsappBtn = document.getElementById("whatsapp-btn");
 
 /* ============================= */
-/* UTIL */
+/* ESTADO */
 /* ============================= */
 
-function reset(select, text) {
-  select.innerHTML = `<option value="">${text}</option>`;
-}
+let marcaId = null;
+let modeloId = null;
+let precioActual = 0;
 
 /* ============================= */
-/* CARGAR MARCAS */
+/* HELPERS */
 /* ============================= */
 
-async function cargarMarcas() {
-  const { data, error } = await client
-    .from("Servicios")
-    .select("marca")
-    .eq("activo", true);
+const formatCOP = (valor) =>
+  `$${valor.toLocaleString("es-CO")} COP`;
 
-  if (error) {
-    console.error(error);
+const resetPrecio = () => {
+  precioActual = 0;
+  precioEl.textContent = "$0 COP";
+};
+
+/* ============================= */
+/* MARCA → MODELOS */
+/* ============================= */
+
+marcaSelect.addEventListener("change", async () => {
+  resetPrecio();
+  modeloSelect.innerHTML = `<option value="">Selecciona modelo</option>`;
+  modeloId = null;
+
+  const marcaNombre = marcaSelect.value;
+  if (!marcaNombre) return;
+
+  const { data: marca, error } = await supabaseClient
+    .from("marcas")
+    .select("id")
+    .eq("nombre", marcaNombre)
+    .single();
+
+  if (error || !marca) {
+    console.error("Marca no encontrada", error);
     return;
   }
 
-  const marcas = [...new Set(data.map(d => d.marca))];
+  marcaId = marca.id;
 
-  reset(marcaEl, "Selecciona marca");
+  const { data: modelos, error: errModelos } = await supabaseClient
+    .from("modelos")
+    .select("id, nombre")
+    .eq("marca_id", marcaId)
+    .order("nombre");
 
-  marcas.forEach(m => {
-    marcaEl.innerHTML += `<option value="${m}">${m}</option>`;
-  });
-}
-
-/* ============================= */
-/* CARGAR MODELOS */
-/* ============================= */
-
-async function cargarModelos() {
-  reset(modeloEl, "Selecciona modelo");
-
-  const marca = marcaEl.value;
-  if (!marca) return;
-
-  const { data, error } = await client
-    .from("Servicios")
-    .select("modelo")
-    .eq("marca", marca)
-    .eq("activo", true);
-
-  if (error) {
-    console.error(error);
+  if (errModelos) {
+    console.error("Error cargando modelos", errModelos);
     return;
   }
 
-  const modelos = [...new Set(data.map(d => d.modelo))];
-
-  modelos.forEach(m => {
-    modeloEl.innerHTML += `<option value="${m}">${m}</option>`;
+  modelos.forEach((m) => {
+    const opt = document.createElement("option");
+    opt.value = m.id;
+    opt.textContent = m.nombre;
+    modeloSelect.appendChild(opt);
   });
-}
+});
+
+/* ============================= */
+/* MODELO */
+/* ============================= */
+
+modeloSelect.addEventListener("change", () => {
+  resetPrecio();
+  modeloId = modeloSelect.value || null;
+});
 
 /* ============================= */
 /* CALCULAR PRECIO */
 /* ============================= */
 
 async function calcularPrecio() {
-  const marca    = marcaEl.value;
-  const modelo   = modeloEl.value;
-  const servicio = servicioEl.value;
-  const calidad  = calidadEl.value;
+  resetPrecio();
 
-  if (!marca || !modelo || !servicio || !calidad) {
-    precioEl.textContent = "$0 COP";
-    return;
-  }
+  if (!modeloId) return;
+  if (!servicioSelect.value) return;
+  if (!calidadSelect.value) return;
 
-  const { data, error } = await client
-    .from("Servicios")
+  const { data, error } = await supabaseClient
+    .from("servicios")
     .select("precio")
-    .eq("marca", marca)
-    .eq("modelo", modelo)
-    .eq("servicio", servicio)
-    .eq("calidad", calidad)
+    .eq("modelo_id", modeloId)
+    .eq("tipo", servicioSelect.value)
+    .eq("calidad", calidadSelect.value)
     .eq("activo", true)
     .single();
 
   if (error || !data) {
-    precioEl.textContent = "$0 COP";
+    precioEl.textContent = "No disponible";
     return;
   }
 
-  precioEl.textContent =
-    `$${data.precio.toLocaleString("es-CO")} COP`;
+  precioActual = data.precio;
+  precioEl.textContent = formatCOP(precioActual);
+
+  actualizarWhatsApp();
 }
 
 /* ============================= */
 /* EVENTOS */
 /* ============================= */
 
-marcaEl.addEventListener("change", () => {
-  reset(modeloEl, "Selecciona modelo");
-  calcularPrecio();
-  cargarModelos();
-});
-
-modeloEl.addEventListener("change", calcularPrecio);
-servicioEl.addEventListener("change", calcularPrecio);
-calidadEl.addEventListener("change", calcularPrecio);
+servicioSelect.addEventListener("change", calcularPrecio);
+calidadSelect.addEventListener("change", calcularPrecio);
 
 /* ============================= */
-/* INIT */
+/* WHATSAPP */
 /* ============================= */
 
-document.addEventListener("DOMContentLoaded", cargarMarcas);
+function actualizarWhatsApp() {
+  const marca = marcaSelect.value;
+  const modelo = modeloSelect.options[modeloSelect.selectedIndex].text;
+  const servicio = servicioSelect.options[servicioSelect.selectedIndex].text;
+  const calidad = calidadSelect.options[calidadSelect.selectedIndex].text;
+
+  const mensaje = `
+Hola TECH-LAG 👋
+Quiero cotizar:
+
+📱 Equipo: ${marca} ${modelo}
+🛠 Servicio: ${servicio}
+⭐ Calidad: ${calidad}
+💰 Precio estimado: ${formatCOP(precioActual)}
+  `.trim();
+
+  const phone = "573224494595"; // <-- TU NÚMERO
+  whatsappBtn.href =
+    "https://wa.me/" +
+    phone +
+    "?text=" +
+    encodeURIComponent(mensaje);
+}
