@@ -5,12 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Cotizador | TECH-LAG</title>
-
   <meta name="description" content="Cotiza en tiempo real la reparación de tu celular en TECH-LAG.">
 
-  <!-- CSS BASE -->
+  <!-- CSS -->
   <link rel="stylesheet" href="assets/css/style.css">
-  <!-- CSS COTIZADOR -->
   <link rel="stylesheet" href="assets/css/cotizador.css">
 </head>
 <body>
@@ -33,35 +31,28 @@
 <section class="section">
   <div class="container">
 
-    <form id="cotizador-form" class="card">
+    <form id="cotizador-form" class="card" onsubmit="return false">
 
       <h1 class="card-title">Cotizador</h1>
       <p class="card-subtitle">Selecciona tu equipo y servicio</p>
 
       <!-- MARCA -->
-      <label>Marca</label>
+      <label for="marca">Marca</label>
       <select id="marca" required>
-        <option value="">Selecciona marca</option>
-        <option>Samsung</option>
-        <option>Apple</option>
-        <option>Xiaomi</option>
-        <option>Motorola</option>
-        <option>Huawei</option>
-        <option>Oppo</option>
-        <option>Realme</option>
+        <option value="">Cargando marcas...</option>
       </select>
 
       <!-- MODELO -->
-      <label>Modelo</label>
-      <select id="modelo" required>
-        <option value="">Selecciona modelo</option>
+      <label for="modelo">Modelo</label>
+      <select id="modelo" required disabled>
+        <option value="">Selecciona una marca primero</option>
       </select>
 
       <!-- SERVICIO -->
-      <label>Servicio</label>
-      <select id="servicio" required>
+      <label for="servicio">Servicio</label>
+      <select id="servicio" required disabled>
         <option value="">Selecciona servicio</option>
-        <option value="pantalla">Cambio de pantalla</option>
+        <option value="cambio_pantalla">Cambio de pantalla</option>
         <option value="bateria">Cambio de batería</option>
         <option value="puerto">Puerto de carga</option>
         <option value="software">Software</option>
@@ -69,8 +60,8 @@
       </select>
 
       <!-- CALIDAD -->
-      <label>Calidad del repuesto</label>
-      <select id="calidad" required>
+      <label for="calidad">Calidad del repuesto</label>
+      <select id="calidad" required disabled>
         <option value="">Selecciona calidad</option>
         <option value="generica">Genérica</option>
         <option value="oem">OEM / Premium</option>
@@ -84,13 +75,13 @@
       <!-- RESULTADO -->
       <div class="resultado">
         <span>Total estimado</span>
-        <h2 id="precio" data-valor="0">$0 COP</h2>
+        <h2 id="precio">$0 COP</h2>
         <small>* Valor estimado, sujeto a diagnóstico físico</small>
       </div>
 
       <!-- CTA -->
-      <a id="whatsapp-btn" class="whatsapp-btn" href="#">
-        <span>Solicitar por WhatsApp</span>
+      <a id="whatsapp-btn" class="whatsapp-btn" href="#" target="_blank">
+        Solicitar por WhatsApp
       </a>
 
     </form>
