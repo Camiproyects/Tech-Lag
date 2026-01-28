@@ -153,28 +153,26 @@ async function calcularPrecio() {
 /* ============================= */
 
 function actualizarWhatsApp() {
-  const marca =
-    marcaSelect.options[marcaSelect.selectedIndex].text;
-  const modelo =
-    modeloSelect.options[modeloSelect.selectedIndex].text;
-  const servicio =
-    servicioSelect.options[servicioSelect.selectedIndex].text;
-  const calidad =
-    calidadSelect.options[calidadSelect.selectedIndex].text;
+  if (!document.getElementById("acepta-tyc").checked) {
+    whatsappBtn.classList.add("disabled");
+    return;
+  }
 
   const mensaje = `
 Hola TECH-LAG 👋
 Quiero cotizar:
 
-📱 Equipo: ${marca} ${modelo}
-🛠 Servicio: ${servicio}
-⭐ Calidad: ${calidad}
+📱 Equipo: ${marcaInput.value} ${modeloInput.value}
+🛠 Servicio: ${servicioSelect.options[servicioSelect.selectedIndex].text}
+⭐ Calidad: ${calidadSelect.options[calidadSelect.selectedIndex].text}
 💰 Precio estimado: ${formatCOP(precioActual)}
 `.trim();
 
   whatsappBtn.href =
     "https://wa.me/573224494595?text=" +
     encodeURIComponent(mensaje);
+
+  whatsappBtn.classList.remove("disabled");
 }
 
 /* ============================= */
