@@ -7,17 +7,14 @@
   <title>Cotizador | TECH-LAG</title>
   <meta name="description" content="Cotiza en tiempo real la reparación de tu celular en TECH-LAG.">
 
-  <!-- CSS -->
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/cotizador.css">
 </head>
 <body>
 
-<!-- ================= TOPBAR ================= -->
 <header class="topbar">
   <div class="container topbar-content">
     <div class="logo">TECH<span>-LAG</span></div>
-
     <nav class="topbar-nav">
       <a href="index.html">Inicio</a>
       <a href="index.html#nosotros">Conócenos</a>
@@ -27,11 +24,10 @@
   </div>
 </header>
 
-<!-- ================= COTIZADOR ================= -->
 <section class="section">
   <div class="container">
 
-    <form id="cotizador-form" class="card" onsubmit="return false">
+    <form id="cotizador-form" class="card">
 
       <h1 class="card-title">Cotizador</h1>
       <p class="card-subtitle">Selecciona tu equipo y servicio</p>
@@ -51,7 +47,7 @@
       <!-- SERVICIO -->
       <label for="servicio">Servicio</label>
       <select id="servicio" required disabled>
-        <option value="">Selecciona servicio</option>
+        <option value="">Selecciona un modelo primero</option>
         <option value="cambio_pantalla">Cambio de pantalla</option>
         <option value="bateria">Cambio de batería</option>
         <option value="puerto">Puerto de carga</option>
@@ -62,7 +58,7 @@
       <!-- CALIDAD -->
       <label for="calidad">Calidad del repuesto</label>
       <select id="calidad" required disabled>
-        <option value="">Selecciona calidad</option>
+        <option value="">Selecciona servicio primero</option>
         <option value="generica">Genérica</option>
         <option value="oem">OEM / Premium</option>
         <option value="original">Original</option>
@@ -72,14 +68,12 @@
         La calidad influye en el precio, durabilidad y experiencia del repuesto.
       </p>
 
-      <!-- RESULTADO -->
       <div class="resultado">
         <span>Total estimado</span>
         <h2 id="precio">$0 COP</h2>
         <small>* Valor estimado, sujeto a diagnóstico físico</small>
       </div>
 
-      <!-- CTA -->
       <a id="whatsapp-btn" class="whatsapp-btn" href="#" target="_blank">
         Solicitar por WhatsApp
       </a>
@@ -89,18 +83,14 @@
   </div>
 </section>
 
-<!-- ================= FOOTER ================= -->
 <footer class="footer">
   <div class="container">
     <a href="index.html">← Volver al inicio</a>
   </div>
 </footer>
 
-<!-- SUPABASE -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="assets/js/supabase.js"></script>
-
-<!-- JS -->
 <script src="assets/js/cotizador.js"></script>
 
 </body>
