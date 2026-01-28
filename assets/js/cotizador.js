@@ -2,8 +2,8 @@
 /* ELEMENTOS */
 /* ============================= */
 
-const marcaSelect = document.getElementById("marca");
-const modeloSelect = document.getElementById("modelo");
+const marcaInput = document.getElementById("marca");
+const modeloInput = document.getElementById("modelo");
 const servicioSelect = document.getElementById("servicio");
 const calidadSelect = document.getElementById("calidad");
 const precioEl = document.getElementById("precio");
@@ -21,8 +21,7 @@ let precioActual = 0;
 /* HELPERS */
 /* ============================= */
 
-const formatCOP = (valor) =>
-  `$${valor.toLocaleString("es-CO")} COP`;
+const formatCOP = (v) => `$${v.toLocaleString("es-CO")} COP`;
 
 const resetPrecio = () => {
   precioActual = 0;
@@ -30,56 +29,60 @@ const resetPrecio = () => {
 };
 
 /* ============================= */
-/* MARCA → MODELOS */
+/* BUSCAR MARCA */
 /* ============================= */
 
-marcaSelect.addEventListener("change", async () => {
+marcaInput.addEventListener("blur", async () => {
   resetPrecio();
-  modeloSelect.innerHTML = `<option value="">Selecciona modelo</option>`;
+  modeloInput.value = "";
   modeloId = null;
 
-  const marcaNombre = marcaSelect.value;
-  if (!marcaNombre) return;
+  const nombre = marcaInput.value.trim();
+  if (!nombre) return;
 
-  const { data: marca, error } = await supabaseClient
+  const { data, error } = await supabaseClient
     .from("marcas")
-    .select("id")
-    .eq("nombre", marcaNombre)
+    .select("id, nombre")
+    .ilike("nombre", nombre)
     .single();
 
-  if (error || !marca) {
-    console.error("Marca no encontrada", error);
+  if (error || !data) {
+    marcaId = null;
+    console.warn("Marca no encontrada");
     return;
   }
 
-  marcaId = marca.id;
-
-  const { data: modelos, error: errModelos } = await supabaseClient
-    .from("modelos")
-    .select("id, nombre")
-    .eq("marca_id", marcaId)
-    .order("nombre");
-
-  if (errModelos) {
-    console.error("Error cargando modelos", errModelos);
-    return;
-  }
-
-  modelos.forEach((m) => {
-    const opt = document.createElement("option");
-    opt.value = m.id;
-    opt.textContent = m.nombre;
-    modeloSelect.appendChild(opt);
-  });
+  marcaId = data.id;
+  marcaInput.value = data.nombre;
 });
 
 /* ============================= */
-/* MODELO */
+/* BUSCAR MODELO */
 /* ============================= */
 
-modeloSelect.addEventListener("change", () => {
+modeloInput.addEventListener("blur", async () => {
   resetPrecio();
-  modeloId = modeloSelect.value || null;
+  modeloId = null;
+
+  if (!marcaId) return;
+
+  const nombre = modeloInput.value.trim();
+  if (!nombre) return;
+
+  const { data, error } = await supabaseClient
+    .from("modelos")
+    .select("id, nombre")
+    .eq("marca_id", marcaId)
+    .ilike("nombre", nombre)
+    .single();
+
+  if (error || !data) {
+    console.warn("Modelo no encontrado");
+    return;
+  }
+
+  modeloId = data.id;
+  modeloInput.value = data.nombre;
 });
 
 /* ============================= */
@@ -109,7 +112,6 @@ async function calcularPrecio() {
 
   precioActual = data.precio;
   precioEl.textContent = formatCOP(precioActual);
-
   actualizarWhatsApp();
 }
 
@@ -125,25 +127,17 @@ calidadSelect.addEventListener("change", calcularPrecio);
 /* ============================= */
 
 function actualizarWhatsApp() {
-  const marca = marcaSelect.value;
-  const modelo = modeloSelect.options[modeloSelect.selectedIndex].text;
-  const servicio = servicioSelect.options[servicioSelect.selectedIndex].text;
-  const calidad = calidadSelect.options[calidadSelect.selectedIndex].text;
-
   const mensaje = `
 Hola TECH-LAG 👋
 Quiero cotizar:
 
-📱 Equipo: ${marca} ${modelo}
-🛠 Servicio: ${servicio}
-⭐ Calidad: ${calidad}
+📱 Equipo: ${marcaInput.value} ${modeloInput.value}
+🛠 Servicio: ${servicioSelect.options[servicioSelect.selectedIndex].text}
+⭐ Calidad: ${calidadSelect.options[calidadSelect.selectedIndex].text}
 💰 Precio estimado: ${formatCOP(precioActual)}
-  `.trim();
+`.trim();
 
-  const phone = "573224494595"; // <-- TU NÚMERO
   whatsappBtn.href =
-    "https://wa.me/" +
-    phone +
-    "?text=" +
+    "https://wa.me/573224494595?text=" +
     encodeURIComponent(mensaje);
 }
