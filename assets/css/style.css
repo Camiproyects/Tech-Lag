@@ -134,6 +134,9 @@ p {
   padding: 28px;
   text-align: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-decoration: none;
+  color: var(--text-main);
+  cursor: pointer;
 }
 
 .card:hover {
