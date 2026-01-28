@@ -2,8 +2,8 @@
 /* ELEMENTOS */
 /* ============================= */
 
-const marcaInput = document.getElementById("marca");
-const modeloInput = document.getElementById("modelo");
+const marcaSelect = document.getElementById("marca");
+const modeloSelect = document.getElementById("modelo");
 const servicioSelect = document.getElementById("servicio");
 const calidadSelect = document.getElementById("calidad");
 const precioEl = document.getElementById("precio");
@@ -29,65 +29,98 @@ const resetPrecio = () => {
 };
 
 /* ============================= */
-/* BUSCAR MARCA */
+/* CARGAR MARCAS */
 /* ============================= */
 
-marcaInput.addEventListener("blur", async () => {
-  resetPrecio();
-  modeloInput.value = "";
-  modeloId = null;
+document.addEventListener("DOMContentLoaded", cargarMarcas);
 
-  const nombre = marcaInput.value.trim();
-  if (!nombre) return;
-
+async function cargarMarcas() {
   const { data, error } = await supabaseClient
     .from("marcas")
     .select("id, nombre")
-    .ilike("nombre", nombre)
-    .single();
+    .order("nombre");
 
-  if (error || !data) {
-    marcaId = null;
-    console.warn("Marca no encontrada");
+  if (error) {
+    console.error(error);
+    marcaSelect.innerHTML = `<option value="">Error cargando marcas</option>`;
     return;
   }
 
-  marcaId = data.id;
-  marcaInput.value = data.nombre;
-});
+  marcaSelect.innerHTML = `<option value="">Selecciona marca</option>`;
+
+  data.forEach((m) => {
+    const opt = document.createElement("option");
+    opt.value = m.id;
+    opt.textContent = m.nombre;
+    marcaSelect.appendChild(opt);
+  });
+}
 
 /* ============================= */
-/* BUSCAR MODELO */
+/* MARCA → MODELOS */
 /* ============================= */
 
-modeloInput.addEventListener("blur", async () => {
+marcaSelect.addEventListener("change", async () => {
   resetPrecio();
+
+  modeloSelect.disabled = true;
+  servicioSelect.disabled = true;
+  calidadSelect.disabled = true;
+
+  modeloSelect.innerHTML = `<option value="">Cargando modelos...</option>`;
   modeloId = null;
 
+  marcaId = marcaSelect.value;
   if (!marcaId) return;
-
-  const nombre = modeloInput.value.trim();
-  if (!nombre) return;
 
   const { data, error } = await supabaseClient
     .from("modelos")
     .select("id, nombre")
     .eq("marca_id", marcaId)
-    .ilike("nombre", nombre)
-    .single();
+    .order("nombre");
 
-  if (error || !data) {
-    console.warn("Modelo no encontrado");
+  if (error) {
+    console.error(error);
     return;
   }
 
-  modeloId = data.id;
-  modeloInput.value = data.nombre;
+  modeloSelect.innerHTML = `<option value="">Selecciona modelo</option>`;
+  data.forEach((m) => {
+    const opt = document.createElement("option");
+    opt.value = m.id;
+    opt.textContent = m.nombre;
+    modeloSelect.appendChild(opt);
+  });
+
+  modeloSelect.disabled = false;
+});
+
+/* ============================= */
+/* MODELO */
+/* ============================= */
+
+modeloSelect.addEventListener("change", () => {
+  resetPrecio();
+
+  modeloId = modeloSelect.value || null;
+  servicioSelect.disabled = !modeloId;
+  calidadSelect.disabled = true;
+});
+
+/* ============================= */
+/* SERVICIO */
+/* ============================= */
+
+servicioSelect.addEventListener("change", () => {
+  resetPrecio();
+  calidadSelect.disabled = !servicioSelect.value;
 });
 
 /* ============================= */
 /* CALCULAR PRECIO */
 /* ============================= */
+
+calidadSelect.addEventListener("change", calcularPrecio);
 
 async function calcularPrecio() {
   resetPrecio();
@@ -116,24 +149,26 @@ async function calcularPrecio() {
 }
 
 /* ============================= */
-/* EVENTOS */
-/* ============================= */
-
-servicioSelect.addEventListener("change", calcularPrecio);
-calidadSelect.addEventListener("change", calcularPrecio);
-
-/* ============================= */
 /* WHATSAPP */
 /* ============================= */
 
 function actualizarWhatsApp() {
+  const marca =
+    marcaSelect.options[marcaSelect.selectedIndex].text;
+  const modelo =
+    modeloSelect.options[modeloSelect.selectedIndex].text;
+  const servicio =
+    servicioSelect.options[servicioSelect.selectedIndex].text;
+  const calidad =
+    calidadSelect.options[calidadSelect.selectedIndex].text;
+
   const mensaje = `
 Hola TECH-LAG 👋
 Quiero cotizar:
 
-📱 Equipo: ${marcaInput.value} ${modeloInput.value}
-🛠 Servicio: ${servicioSelect.options[servicioSelect.selectedIndex].text}
-⭐ Calidad: ${calidadSelect.options[calidadSelect.selectedIndex].text}
+📱 Equipo: ${marca} ${modelo}
+🛠 Servicio: ${servicio}
+⭐ Calidad: ${calidad}
 💰 Precio estimado: ${formatCOP(precioActual)}
 `.trim();
 
