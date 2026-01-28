@@ -7,79 +7,53 @@ const modeloSelect = document.getElementById("modelo");
 const servicioSelect = document.getElementById("servicio");
 const calidadSelect = document.getElementById("calidad");
 const precioEl = document.getElementById("precio");
-const whatsappBtn = document.getElementById("whatsapp-btn");
 
 /* ============================= */
-/* ESTADO */
+/* MAPEO DE SERVICIOS (HTML -> BD) */
 /* ============================= */
 
-let marcaId = null;
-let modeloId = null;
-let precioActual = 0;
-
-/* ============================= */
-/* HELPERS */
-/* ============================= */
-
-const formatCOP = (valor) =>
-  `$${valor.toLocaleString("es-CO")} COP`;
-
-const resetPrecio = () => {
-  precioActual = 0;
-  precioEl.textContent = "$0 COP";
+const SERVICIO_MAP = {
+  pantalla: "cambio_pantalla",
+  bateria: "bateria",
+  puerto: "puerto",
+  software: "software",
+  diagnostico: "diagnostico"
 };
 
 /* ============================= */
-/* MARCA → MODELOS */
+/* CARGAR MODELOS */
 /* ============================= */
 
 marcaSelect.addEventListener("change", async () => {
-  resetPrecio();
   modeloSelect.innerHTML = `<option value="">Selecciona modelo</option>`;
-  modeloId = null;
+  resetPrecio();
 
-  const marcaNombre = marcaSelect.value;
-  if (!marcaNombre) return;
+  if (!marcaSelect.value) return;
 
-  const { data: marca, error } = await supabaseClient
-    .from("marcas")
-    .select("id")
-    .eq("nombre", marcaNombre)
-    .single();
-
-  if (error || !marca) {
-    console.error("Marca no encontrada", error);
-    return;
-  }
-
-  marcaId = marca.id;
-
-  const { data: modelos, error: errModelos } = await supabaseClient
+  const { data, error } = await supabase
     .from("modelos")
-    .select("id, nombre")
-    .eq("marca_id", marcaId)
-    .order("nombre");
+    .select("id, nombre, marcas!inner(nombre)")
+    .eq("marcas.nombre", marcaSelect.value);
 
-  if (errModelos) {
-    console.error("Error cargando modelos", errModelos);
+  if (error) {
+    console.error(error);
     return;
   }
 
-  modelos.forEach((m) => {
-    const opt = document.createElement("option");
-    opt.value = m.id;
-    opt.textContent = m.nombre;
-    modeloSelect.appendChild(opt);
+  data.forEach((modelo) => {
+    const option = document.createElement("option");
+    option.value = modelo.id;
+    option.textContent = modelo.nombre;
+    modeloSelect.appendChild(option);
   });
 });
 
 /* ============================= */
-/* MODELO */
+/* EVENTOS DE CÁLCULO */
 /* ============================= */
 
-modeloSelect.addEventListener("change", () => {
-  resetPrecio();
-  modeloId = modeloSelect.value || null;
+[modeloSelect, servicioSelect, calidadSelect].forEach((el) => {
+  el.addEventListener("change", calcularPrecio);
 });
 
 /* ============================= */
@@ -89,61 +63,45 @@ modeloSelect.addEventListener("change", () => {
 async function calcularPrecio() {
   resetPrecio();
 
-  if (!modeloId) return;
-  if (!servicioSelect.value) return;
-  if (!calidadSelect.value) return;
+  if (
+    !modeloSelect.value ||
+    !servicioSelect.value ||
+    !calidadSelect.value
+  ) {
+    return;
+  }
 
-  const { data, error } = await supabaseClient
+  const servicioBD = SERVICIO_MAP[servicioSelect.value];
+
+  if (!servicioBD) {
+    console.error("Servicio no mapeado");
+    return;
+  }
+
+  const { data, error } = await supabase
     .from("servicios")
     .select("precio")
-    .eq("modelo_id", modeloId)
-    .eq("tipo", servicioSelect.value)
+    .eq("modelo_id", modeloSelect.value)
+    .eq("tipo", servicioBD)
     .eq("calidad", calidadSelect.value)
     .eq("activo", true)
-    .single();
+    .limit(1)
+    .maybeSingle();
 
   if (error || !data) {
     precioEl.textContent = "No disponible";
     return;
   }
 
-  precioActual = data.precio;
-  precioEl.textContent = formatCOP(precioActual);
-
-  actualizarWhatsApp();
+  precioEl.dataset.valor = data.precio;
+  precioEl.textContent = `$${data.precio.toLocaleString("es-CO")} COP`;
 }
 
 /* ============================= */
-/* EVENTOS */
+/* UTILIDADES */
 /* ============================= */
 
-servicioSelect.addEventListener("change", calcularPrecio);
-calidadSelect.addEventListener("change", calcularPrecio);
-
-/* ============================= */
-/* WHATSAPP */
-/* ============================= */
-
-function actualizarWhatsApp() {
-  const marca = marcaSelect.value;
-  const modelo = modeloSelect.options[modeloSelect.selectedIndex].text;
-  const servicio = servicioSelect.options[servicioSelect.selectedIndex].text;
-  const calidad = calidadSelect.options[calidadSelect.selectedIndex].text;
-
-  const mensaje = `
-Hola TECH-LAG 👋
-Quiero cotizar:
-
-📱 Equipo: ${marca} ${modelo}
-🛠 Servicio: ${servicio}
-⭐ Calidad: ${calidad}
-💰 Precio estimado: ${formatCOP(precioActual)}
-  `.trim();
-
-  const phone = "573224494595"; // <-- TU NÚMERO
-  whatsappBtn.href =
-    "https://wa.me/" +
-    phone +
-    "?text=" +
-    encodeURIComponent(mensaje);
+function resetPrecio() {
+  precioEl.dataset.valor = 0;
+  precioEl.textContent = "$0 COP";
 }
